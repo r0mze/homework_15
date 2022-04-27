@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, app
+from flask import Flask, jsonify
 import sqlite3
 
 
@@ -29,15 +29,18 @@ def main():
     ORDER BY release_year DESC
     LIMIT 1   
             """
-        response = db_connect(query)[0]
-        response_json = {
-            'title': response[0],
-            'county': response[1],
-            'release_year': response[2],
-            'genre': response[3],
-            'description': response[4].strip(),
-        }
-        return jsonify(response_json)
+        response = db_connect(query)
+        if len(response) == 0:
+            return 'sorry i am not (´｡• ᵕ •｡)'
+        else:
+            response_json = {
+                'title': response[0][0],
+                'county': response[0][1],
+                'release_year': response[0][2],
+                'genre': response[0][3],
+                'description': response[0][4].strip(),
+            }
+            return jsonify(response_json)
 
 
     @app.route('/rating/<group>')
@@ -111,53 +114,53 @@ def main():
             })
         return jsonify(response_json)
 
-    def get_actors(name1='Rose McIver', name2='Ben Lamb'):
-        query = f"""
-            SELECT 
-                "cast"
-            FROM netflix
-            WHERE "cast" LIKE '%{name1}%'
-            AND "cast" LIKE '%{name2}%'
-            """
-        response = db_connect(query)
-        actors = []
-        for cast in response:
-            actors.extend(cast[0].split(', '))
-        result = []
-        for a in actors:
-            if a not in [name1, name2]:
-                if actors.count(a) > 2:
-                    result.append(a)
-        result = set(result)
-        print(result)
+    # def get_actors(name1='Rose McIver', name2='Ben Lamb'):
+    #     query = f"""
+    #         SELECT
+    #             "cast"
+    #         FROM netflix
+    #         WHERE "cast" LIKE '%{name1}%'
+    #         AND "cast" LIKE '%{name2}%'
+    #         """
+    #     response = db_connect(query)
+    #     actors = []
+    #     for cast in response:
+    #         actors.extend(cast[0].split(', '))
+    #     result = []
+    #     for a in actors:
+    #         if a not in [name1, name2]:
+    #             if actors.count(a) > 2:
+    #                 result.append(a)
+    #     result = set(result)
+    #     print(result)
+    #
+    # get_actors()
 
-    get_actors()
 
+    # def get_films(type_film,release_year,genre):
+    #     query = f"""
+    #         SELECT
+    #             title
+    #             , description
+    #             , type
+    #         FROM netflix n
+    #         WHERE "type" = '{type_film}'
+	#             AND release_year = {release_year}
+	#             AND listed_in LIKE '%{genre}%'
+    #         """
+    #     response = db_connect(query)
+    #     response_json = []
+    #     for film in response:
+    #         response_json.append({
+    #             'title': film[0],
+    #             'description': film[1],
+    #             'type': film[2]
+    #         })
+    #     return response_json
+    #
+    # print(get_films(type_film='Movie',release_year=2016,genre='Dramas'))
 
-    def get_films(type_film,release_year,genre):
-        query = f"""
-            SELECT
-                title
-                , description
-                , type 
-            FROM netflix n 
-            WHERE "type" = '{type_film}'
-	            AND release_year = {release_year}
-	            AND listed_in LIKE '%{genre}%'
-            """
-        response = db_connect(query)
-        response_json = []
-        for film in response:
-            response_json.append({
-                'title': film[0],
-                'description': film[1],
-                'type': film[2]
-            })
-        return response_json
-
-    print(get_films(type_film='Movie',release_year=2016,genre='Dramas'))
-
-    #app.run(debug=True)
+    app.run(debug=True)
 
 if __name__ == '__main__':
     main()
