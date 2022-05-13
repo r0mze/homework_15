@@ -1,0 +1,39 @@
+-- INSERT INTO animals_redesigned(date_of_birth)
+-- SELECT date_of_birth FROM animals
+
+-- DELETE FROM animals_redesigned WHERE animals_redesigned.animal_id is null
+
+-- INSERT INTO animals_redesigned(animal_index,
+--                                animal_id,
+--                                name,
+--                                date_of_birth,
+--                                animal_type_id,
+--                                breed_id,
+--                                color1_id, color2_id,
+--                                age_upon_outcome_id,
+--                                outcome_subtype_id,
+--                                outcome_type_id,
+--                                outcome_month,
+--                                outcome_year)
+SELECT animals.'index',
+       animal_id.animal_id as animal_id,
+       animals.name,
+       animals.date_of_birth,
+       animal_type.animal_type_id as animal_type_id,
+       breed.breed_id as breed_id,
+--        color_1.animal_color_id as color1_id,
+--        color_2.animal_color_id as color2_id,
+       age_upon_outcome.age_upon_outcome_id as age_upon_outcome_id,
+       outcome_subtype.outcome_subtype_id as outcome_subtype_id,
+       outcome_type.outcome_type_id as outcome_type_id,
+       animals.outcome_month,
+       animals.outcome_year
+FROM animals
+LEFT JOIN animal_id ON animal_id.animal_id = animals.animal_id
+LEFT JOIN animal_type ON animal_type.animal_type = animals.animal_type
+LEFT JOIN breed ON breed.breed = animals.breed
+-- INNER JOIN animal_color as color_1 ON  animals.color1 = color_1.animal_color
+-- INNER JOIN animal_color as color_2 ON  animals.color2 = color_2.animal_color
+LEFT JOIN age_upon_outcome ON age_upon_outcome.age_upon_outcome = animals.age_upon_outcome
+LEFT JOIN outcome_subtype ON outcome_subtype.outcome_subtype = animals.outcome_subtype
+LEFT JOIN outcome_type ON outcome_type.outcome_type = animals.outcome_type
