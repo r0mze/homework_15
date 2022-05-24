@@ -83,3 +83,29 @@ INSERT INTO animal_id(animal_id)
 SELECT DISTINCT
     animals.animal_id
 FROM animals
+
+-- Создаем нормализованную таблицу животных приюта animals_redesigned
+
+CREATE TABLE animals_redesigned (
+	animal_index VARCHAR PRIMARY KEY ,
+	animal_id,
+	name VARCHAR,
+	date_of_birth DATE,
+	animal_type_id INTEGER,
+ 	breed_id INTEGER,
+ 	color1_id INTEGER,
+ 	color2_id INTEGER,
+ 	age_upon_outcome_id INTEGER,
+ 	outcome_subtype_id INTEGER,
+ 	outcome_type_id INTEGER,
+ 	outcome_month INTEGER,
+ 	outcome_year INTEGER,
+    FOREIGN KEY (animal_id) REFERENCES animal_id(animal_id_key),
+    FOREIGN KEY (animal_type_id) REFERENCES animal_type(animal_type_id),
+    FOREIGN KEY (breed_id) REFERENCES breed(breed_id),
+    FOREIGN KEY (color1_id) REFERENCES animal_color(animal_color_id),
+    FOREIGN KEY (color2_id) REFERENCES animal_color(animal_color_id),
+    FOREIGN KEY (age_upon_outcome_id) REFERENCES age_upon_outcome(age_upon_outcome_id),
+    FOREIGN KEY (outcome_subtype_id) REFERENCES outcome_subtype(outcome_subtype_id),
+    FOREIGN KEY (outcome_type_id) REFERENCES outcome_type(outcome_type_id)
+)
